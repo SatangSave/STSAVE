@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SatangSave – เศษเงินทอน สู่สลากออมทรัพย์</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#0F7B4F;--gd:#0A3D2B;--gm:#E4F3EA;--gy:#F3F5F4;--ln:#DDE3E0;--tx:#16221C;--mu:#66756D;--gold:#C9962B}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Thai','Noto Sans Thai',Tahoma,sans-serif;background:#DCE3DF;color:var(--tx);min-height:100vh;display:flex;justify-content:center;align-items:center;font-size:15px;line-height:1.5}
+#app{position:relative;width:100%;max-width:400px;height:100vh;max-height:844px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+@media(min-width:500px){#app{height:min(844px,94vh);border-radius:32px;box-shadow:0 20px 60px rgba(10,61,43,.25)}}
+main{flex:1;overflow-y:auto;padding-bottom:16px}
+.page{display:none}.page.on{display:block}
+.top{background:var(--gd);color:#fff;padding:22px 20px 70px}
+.brand{font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
+.brand i{width:26px;height:26px;border-radius:50%;background:var(--g);border:2px solid #6FD3A1;display:inline-block}
+.top h1{font-size:22px;line-height:1.35;margin-top:14px;font-weight:600}
+.top p{color:#B9D6C8;font-size:13px;margin-top:6px}
+.wrap{padding:0 16px}
+.pull{margin-top:-52px}
+.card{background:#fff;border:1px solid var(--ln);border-radius:16px;padding:16px;margin-bottom:12px}
+.pot .lbl{color:var(--mu);font-size:13px}
+.pot .big{font-size:34px;font-weight:700;color:var(--g)}
+.pot .big small{font-size:15px;color:var(--mu);font-weight:500}
+.bar{height:12px;background:var(--gm);border-radius:8px;overflow:hidden;margin:10px 0 6px}
+.bar b{display:block;height:100%;background:var(--g);width:0;transition:width .8s}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.sm{font-size:13px;color:var(--mu)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stats .card{margin:0}.stats b{display:block;font-size:20px}
+.btn{border:0;border-radius:12px;padding:13px 16px;font-weight:600;font-size:15px;font-family:inherit;cursor:pointer;background:var(--g);color:#fff;width:100%}
+.btn:disabled{background:#B9C4BE;cursor:not-allowed}
+.btn.o{background:#fff;color:var(--g);border:1.5px solid var(--g)}
+.btn:focus-visible,.tab:focus-visible,.opt:focus-visible{outline:3px solid #6FD3A1;outline-offset:2px}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.acts .btn{padding:11px 4px;font-size:13px}
+h2{font-size:17px;margin:6px 0 10px;font-weight:600}
+.item{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--ln)}
+.item:last-child{border:0}
+.pos{color:var(--g);font-weight:600}.neg{color:var(--mu);font-weight:600}
+nav{display:flex;border-top:1px solid var(--ln);background:#fff}
+.tab{flex:1;border:0;background:none;padding:9px 2px 10px;font-weight:500;font-size:11.5px;font-family:inherit;color:var(--mu);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--g);font-weight:700;box-shadow:inset 0 3px 0 var(--g)}
+.opt{flex:1;border:1.5px solid var(--ln);background:#fff;border-radius:12px;padding:12px;font-weight:600;font-size:15px;font-family:inherit;cursor:pointer}
+.opt.on{border-color:var(--g);background:var(--gm);color:var(--g)}
+select.sel{width:100%;margin:8px 0;border:1.5px solid var(--ln);border-radius:12px;padding:13px 12px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:var(--tx)}
+select.sel:focus-visible{outline:3px solid #6FD3A1;outline-offset:2px}
+.bank{display:flex;gap:8px;margin:8px 0}
+.tag{display:inline-block;background:var(--gm);color:var(--g);border-radius:8px;padding:2px 8px;font-size:12px;font-weight:600}
+.ov{position:absolute;inset:0;background:rgba(10,30,22,.55);display:none;align-items:flex-end;z-index:5}
+.ov.on{display:flex}
+.sheet{background:#fff;width:100%;border-radius:24px 24px 0 0;padding:22px 20px 24px;max-height:92%;overflow-y:auto;animation:up .3s}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sheet h3{font-size:19px;margin-bottom:8px}
+.sheet .btn+.btn{margin-top:8px}
+input.pin{width:100%;font-weight:600;font-size:26px;font-family:inherit;letter-spacing:10px;text-align:center;border:1.5px solid var(--ln);border-radius:12px;padding:12px;margin:12px 0}
+.ticket{background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;border-radius:18px;padding:18px;margin:12px 0;position:relative}
+.ticket .no{font-size:28px;font-weight:700;letter-spacing:1px;margin:8px 0}
+.ticket .pz{color:#F4D98A;font-weight:600}
+.ticket hr{border:0;border-top:1.5px dashed rgba(255,255,255,.4);margin:12px 0}
+.toast{position:absolute;left:16px;right:16px;top:16px;background:var(--gd);color:#fff;padding:12px 14px;border-radius:12px;z-index:9;display:none;font-size:14px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--mu);margin:10px 0}
+.chk input{margin-top:4px;width:18px;height:18px;accent-color:var(--g)}
+.lock{background:var(--gy);border-radius:12px;padding:12px;font-size:14px}
+.tk{border:1px solid var(--ln);border-radius:16px;background:#fff;margin-bottom:12px;overflow:hidden}
+.tk .hd{background:linear-gradient(120deg,var(--gd),var(--g));color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.tk .hd b{font-size:19px;letter-spacing:.5px}.tk .hd small{color:#B9D6C8;font-size:12px}
+.tk .bd{padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.tk .bd span{font-size:12px;color:var(--mu);display:block}.tk .bd b{font-size:15px}
+.tk .ft{border-top:1.5px dashed var(--ln);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;color:var(--mu)}
+.hd.g2{background:linear-gradient(120deg,#7A1E4B,#C23A7B)}.hd.g3{background:linear-gradient(120deg,#1F4D2A,#3F8A4B)}
+.chip{display:inline-block;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:600;background:var(--gm);color:var(--g)}
+.chip.w{background:#FBF0D5;color:#8A6410}.chip.p{background:var(--gy);color:var(--mu)}
+.s3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.s3>div{background:#fff;border:1px solid var(--ln);border-radius:14px;padding:10px 8px;text-align:center}
+.s3 span{display:block;font-size:11.5px;color:var(--mu)}.s3 b{font-size:15px}
+.dr{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}.dr:last-child{border:0}
+.dot{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gy);color:var(--mu);font-weight:700}
+.dot.w{background:#FBF0D5;color:var(--gold)}
+main{background:#F3F5F4}
+.card{border:0;border-radius:18px;box-shadow:0 1px 3px rgba(10,61,43,.08)}
+.sb{background:var(--gd);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:10px 24px 2px;font-size:12px;font-weight:600}
+.sb svg{width:16px;height:12px;fill:#fff;margin-left:5px;vertical-align:-1px}
+.top{background:radial-gradient(circle at 92% 8%,rgba(111,211,161,.28),transparent 42%),radial-gradient(circle at 5% 100%,rgba(15,123,79,.6),transparent 50%),var(--gd);border-radius:0 0 28px 28px}
+.page.on{animation:fade .3s}@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+nav{box-shadow:0 -6px 18px rgba(10,61,43,.07);border:0}
+.tab.on{box-shadow:none}.tab.on svg{background:var(--gm);border-radius:10px;padding:3px;width:30px;height:26px;margin:-2px 0}
+.sheet::before{content:"";display:block;width:40px;height:4px;border-radius:2px;background:var(--ln);margin:-8px auto 14px}
+.ring{position:relative;width:104px;height:104px;flex:none}
+.ring svg{width:104px;height:104px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring .t{stroke:var(--gm)}.ring .v{stroke:var(--g);stroke-dasharray:251.3;stroke-dashoffset:251.3;transition:stroke-dashoffset .9s}
+.ring div{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:var(--g)}
+.pot .big{font-size:30px;line-height:1.2}
+.acts{gap:10px}
+.tile{border:0;background:#fff;border-radius:16px;padding:12px 4px;font-family:inherit;font-weight:600;font-size:13px;color:var(--tx);cursor:pointer;box-shadow:0 1px 3px rgba(10,61,43,.08);display:flex;flex-direction:column;align-items:center;gap:6px}
+.tile i{width:38px;height:38px;border-radius:12px;background:var(--gm);color:var(--g);display:flex;align-items:center;justify-content:center}
+.tile svg,.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.btn{box-shadow:0 4px 12px rgba(15,123,79,.25);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.o,.btn:disabled{box-shadow:none}
+.wcard{background:radial-gradient(circle at 90% 10%,rgba(111,211,161,.35),transparent 45%),linear-gradient(135deg,var(--gd),var(--g));color:#fff;border-radius:20px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden}
+.wcard small{color:#B9D6C8;font-size:13px}.wcard b{display:block;font-size:34px;line-height:1.2;margin:4px 0 14px}
+.wcard .tag{background:rgba(255,255,255,.18);color:#fff}
+.ok{width:64px;height:64px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.ok svg{width:34px;height:34px;fill:none;stroke:var(--g);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;animation:ck .6s .1s both}
+@keyframes ck{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+.hi{flex:none;width:38px;height:38px;border-radius:12px;background:var(--gm);color:var(--g);display:flex;align-items:center;justify-content:center;font-weight:700}
+.hi svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.item .l{display:flex;gap:12px;align-items:center}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="toast" id="toast" role="status"></div>
+<div class="sb"><span>9:41</span><span><svg viewBox="0 0 16 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.3" y="5.5" width="3" height="6.5" rx="1"/><rect x="8.6" y="3" width="3" height="9" rx="1"/><rect x="13" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 24 12"><rect x="0" y="1" width="21" height="10" rx="3" fill="none" stroke="#fff" stroke-width="1.2"/><rect x="2" y="3" width="15" height="6" rx="1.5"/></svg></span></div>
+<main>
+<!-- หน้าแรก -->
+<section class="page on" id="p-home">
+  <div class="top">
+    <div class="brand"><i></i>SatangSave</div>
+    <h1>เปลี่ยนเศษเงินทอนสแกนจ่าย เป็นสลากออมทรัพย์ดิจิทัล</h1>
+    <p>เงินต้นอยู่ครบ 100% เก็บทีละนิดจนครบ 1,000 บาท ซื้อสลากได้ตามเกณฑ์ธนาคาร</p>
+  </div>
+  <div class="wrap pull">
+    <div class="card pot row" style="gap:16px;justify-content:flex-start">
+      <div class="ring"><svg viewBox="0 0 104 104"><circle class="t" cx="52" cy="52" r="40"/><circle class="v" id="potR" cx="52" cy="52" r="40"/></svg><div id="potP"></div></div>
+      <div><div class="lbl">เศษเงินที่ปัดสะสมได้วันนี้</div>
+      <div class="big"><span id="potV">983</span> <small>/ 1,000 บาท</small></div>
+      <div class="sm" id="potT"></div></div>
+    </div>
+    <div class="stats">
+      <div class="card"><span class="sm">เงินใน e-Wallet</span><b id="walV">983 บาท</b></div>
+      <div class="card"><span class="sm">มูลค่าสลากรวม</span><b id="lotV">2,000 บาท</b><span class="sm" id="lotU">ถืออยู่ 20 หน่วย</span></div>
+    </div>
+    <div class="acts">
+      <button class="tile" onclick="stub()"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg></i>ฝากเงิน</button>
+      <button class="tile" onclick="go('wallet')"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></i>ผูกบัญชี</button>
+      <button class="tile" onclick="stub()"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg></i>ถอนเงิน</button>
+    </div>
+    <button class="btn" style="margin-bottom:8px" onclick="scan()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 12h8"/></svg>สแกนจ่ายจำลอง 43 บาท</button>
+    <button class="btn o" id="buyHome" onclick="askBuy()" style="margin-bottom:12px">ยืนยันซื้อสลาก 10 หน่วย</button>
+    <h2>รายการล่าสุด</h2>
+    <div class="card" id="homeHist"></div>
+    <div class="card"><h2>ทำไมต้อง SatangSave</h2>
+      <p class="sm">อยากออมทีละ 10–20 บาท แต่สลากออมสินดิจิทัล 1 ปี ซื้อขั้นต่ำ 10 หน่วย (1,000 บาทต่อครั้ง) เราเก็บเศษเงินทอนให้โดยไม่รู้ตัว พอครบ 1,000 บาทจึงแจ้งเตือนให้กดซื้อ</p></div>
+  </div>
+</section>
+
+<!-- กระเป๋าเงิน -->
+<section class="page" id="p-wallet"><div class="wrap">
+  <h2 style="margin-top:20px">กระเป๋าเงินดิจิทัล</h2>
+  <div class="wcard"><div class="row"><small>ยอดเงินใน e-Wallet</small><span class="tag">SatangSave</span></div><b id="wBal">983 บาท</b><small>เศษเงินทอนที่สะสมไว้สำหรับซื้อสลาก</small></div>
+  <div class="card" id="bankCard"></div>
+  <h2>ประวัติการสแกนจ่ายและเศษเงิน</h2>
+  <div class="card" id="hist"></div>
+</div></section>
+
+<!-- ตั้งค่า -->
+<section class="page" id="p-set"><div class="wrap">
+  <h2 style="margin-top:20px">ตั้งค่าการปัดเศษ</h2>
+  <div class="card"><b>ปัดเศษขึ้นทีละ</b>
+    <div class="bank"><button class="opt" id="r10">10 บาท</button><button class="opt on" id="r20">20 บาท</button></div>
+    <p class="sm">ตัวอย่าง จ่าย 43 บาท ปัดเป็น 60 บาท เศษที่เก็บคือ 17 บาท</p>
+    <p class="sm" style="margin-top:6px" id="rNote">ในระบบจำลองนี้ใช้การปัดเศษ 20 บาทเสมอ</p></div>
+  <div class="card"><b>เกณฑ์การสะสมก่อนแจ้งเตือน</b>
+    <div class="lock" style="margin-top:8px"><b>1,000 บาท</b> (สลาก 10 หน่วย)<br><span class="sm">ล็อกไว้ตามเงื่อนไขขั้นต่ำของสลาก เศษที่เกินจะยกยอดไปรอบถัดไป</span></div></div>
+  <div class="card" id="bankSet"></div>
+</div></section>
+
+<!-- ตลาดสลาก -->
+<section class="page" id="p-mkt">
+  <div class="top" style="padding-bottom:64px">
+    <div class="brand">ตลาดสลากออมทรัพย์ดิจิทัล</div>
+    <p style="margin-top:14px">เศษเงินสะสมของคุณ</p>
+    <div style="font-size:30px;font-weight:700;line-height:1.2"><span id="mAmt"></span> <small style="font-size:15px;font-weight:500;color:#B9D6C8">/ 1,000 บาท</small></div>
+    <div class="bar" style="background:rgba(255,255,255,.2)"><b id="mBar" style="background:#6FD3A1"></b></div>
+  </div>
+  <div class="wrap pull">
+    <div class="tk"><div class="hd "><div><small>SatangSave</small><br><b style="font-size:17px;letter-spacing:0">สลากดิจิทัลเพื่อการออม</b></div><span class="chip" style="background:rgba(255,255,255,.18);color:#fff">เปิดขาย</span></div>
+      <div class="bd"><div><span>ราคา</span><b>100 บาท/หน่วย</b></div><div><span>ซื้อขั้นต่ำ</span><b>10 หน่วย (1,000 บาท)</b></div><div><span>ดอกเบี้ย</span><b>0.25% ต่อปี</b></div><div><span>รางวัลที่ 1</span><b>3,000,000 บาท</b></div><div><span>ออกรางวัล</span><b>วันที่ 1 และ 16</b></div><div><span>อายุ</span><b>1 ปี</b></div></div>
+      <div class="ft" style="display:block"><button class="btn" id="buyMkt" onclick="askBuy()">ยืนยันซื้อสลาก 10 หน่วย</button><p class="sm" id="mktNote" style="margin-top:8px;text-align:center"></p></div></div>
+    <div class="tk"><div class="hd g2"><div><small>ธนาคารออมสิน</small><br><b style="font-size:17px;letter-spacing:0">สลากออมสินพิเศษดิจิทัล 1 ปี</b></div><span class="chip" style="background:rgba(255,255,255,.18);color:#fff">ข้อมูลอ้างอิง</span></div>
+      <div class="bd"><div><span>ราคา</span><b>100 บาท/หน่วย</b></div><div><span>ซื้อขั้นต่ำ</span><b>10 หน่วย (1,000 บาท)</b></div><div><span>ดอกเบี้ย</span><b>–</b></div><div><span>รางวัลที่ 1</span><b>10,000,000 บาท</b></div><div><span>ออกรางวัล</span><b>วันที่ 16 ของเดือน</b></div><div><span>อายุ</span><b>1 ปี</b></div></div>
+      <div class="ft" style="display:block"><button class="btn" disabled>ยังไม่เปิดให้ซื้อในระบบจำลอง</button></div></div>
+    <div class="tk"><div class="hd g3"><div><small>ธ.ก.ส.</small><br><b style="font-size:17px;letter-spacing:0">สลากดิจิทัล ธ.ก.ส.</b></div><span class="chip" style="background:rgba(255,255,255,.18);color:#fff">ข้อมูลอ้างอิง</span></div>
+      <div class="bd"><div><span>ราคา</span><b>50 บาท/หน่วย</b></div><div><span>ซื้อขั้นต่ำ</span><b>–</b></div><div><span>ดอกเบี้ย</span><b>0.07 บาท/หน่วย ตลอด 2 ปี</b></div><div><span>รางวัลที่ 1</span><b>5,000,000 บาท</b></div><div><span>ออกรางวัล</span><b>วันที่ 16 ของเดือน</b></div><div><span>อายุ</span><b>2 ปี</b></div></div>
+      <div class="ft" style="display:block"><button class="btn" disabled>ยังไม่เปิดให้ซื้อในระบบจำลอง</button></div></div>
+    <p class="sm" style="margin:2px 4px 12px">สลากของ SatangSave เป็นข้อมูลจำลองสำหรับ Prototype ส่วนสลากออมสินและ ธ.ก.ส. อ้างอิงจากข่าวสาธารณะ ช่อง "–" คือยังไม่พบข้อมูล ราคาของสลากออมสินอ้างอิงจากสลากออมสินพิเศษ 1 ปี โปรดตรวจสอบรายละเอียดกับธนาคารก่อนซื้อจริง</p>
+  </div>
+</section>
+
+<!-- พอร์ต -->
+<section class="page" id="p-port">
+  <div class="top" style="padding-bottom:64px">
+    <div class="brand">พอร์ตสลากของฉัน</div>
+    <p style="margin-top:14px">มูลค่าสลากรวม</p>
+    <div style="font-size:36px;font-weight:700;line-height:1.2"><span id="pTotal"></span> <small style="font-size:16px;font-weight:500;color:#B9D6C8">บาท</small></div>
+    <p id="pUnits"></p>
+  </div>
+  <div class="wrap pull">
+    <div class="s3">
+      <div><span>ดอกเบี้ยสะสม</span><b id="pInt"></b></div>
+      <div><span>รางวัลสะสม</span><b id="pPrize"></b></div>
+      <div><span>งวดถัดไป</span><b id="pNext"></b></div>
+    </div>
+    <h2>สลากที่ถือครอง</h2>
+    <div id="lots"></div>
+    <h2>ผลการตรวจรางวัล</h2>
+    <div class="card" id="draws"></div>
+  </div>
+</section>
+</main>
+
+<nav>
+  <button class="tab on" data-p="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>หน้าแรก</span></button>
+  <button class="tab" data-p="wallet"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M16 13h5v4h-5a2 2 0 0 1 0-4z"/><path d="M5 6l11-3v3"/></svg><span>กระเป๋าเงิน</span></button>
+  <button class="tab" data-p="mkt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2"/></svg><span>ตลาดสลาก</span></button>
+  <button class="tab" data-p="port"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/></svg><span>พอร์ต</span></button>
+  <button class="tab" data-p="set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>ตั้งค่า</span></button>
+</nav>
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+</div>
+
+<script>
+const S0=()=>({pot:983,units:20,value:2000,
+  lots:[{no:'กข 1234567',u:10,iso:'2026-10-05',win:1},{no:'ขค 2345678',u:10,iso:'2026-09-20'}],
+  hist:[{t:'สแกนจ่ายร้านกาแฟ',a:'จ่าย 43 บาท · เก็บเศษ 17 บาท',m:'ตัวอย่าง',old:1}].slice(0,0).concat([
+    {t:'สแกนจ่ายร้านข้าวแกง',a:'จ่าย 65 บาท · ปัดเป็น 80 · เก็บเศษ 15 บาท',m:'+15'},
+    {t:'สแกนจ่ายร้านสะดวกซื้อ',a:'จ่าย 37 บาท · ปัดเป็น 40 · เก็บเศษ 3 บาท',m:'+3'}]),
+  banks:[]});
+let S=S0(),pick=null,$=id=>document.getElementById(id);
+const TODAY='2026-11-07',LASTDRAW='2026-11-01',MON=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const dth=(iso,y)=>{const[a,b,c]=iso.split('-');return +c+' '+MON[b-1]+(y===0?'':' '+(+a+543))};
+const TK='<svg viewBox="0 0 24 24"><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/></svg>',OK='<div class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>';
+const th=n=>n.toLocaleString('th-TH');
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2600)}
+function stub(){toast('ระบบจำลอง: ฟังก์ชันนี้อยู่ระหว่างการพัฒนา')}
+function go(p){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('on',e.id==='p-'+p));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('on',e.dataset.p===p));$('app').querySelector('main').scrollTop=0}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.p));
+function modal(h){$('sheet').innerHTML=h;$('ov').classList.add('on')}
+function closeModal(){$('ov').classList.remove('on')}
+$('ov').onclick=e=>{if(e.target.id==='ov')closeModal()};
+function render(){
+  const full=S.pot>=1000,pc=Math.min(100,S.pot/10);
+  $('potV').textContent=th(S.pot);$('walV').textContent=th(S.pot)+' บาท';$('wBal').textContent=th(S.pot)+' บาท';$('potR').style.strokeDashoffset=251.3*(1-pc/100);$('potP').textContent=Math.round(pc)+'%';$('potR').style.opacity=pc>0?1:0;
+  $('potT').textContent=full?'ครบแล้ว กดยืนยันเพื่อซื้อสลาก 10 หน่วย':S.pot===0?'สะสมให้ครบ 1,000 บาทเพื่อซื้อสลาก':'อีก '+th(1000-S.pot)+' บาท จะครบ 1,000 บาทสำหรับซื้อสลาก';
+  $('lotV').textContent=th(S.value)+' บาท';$('lotU').textContent='ถืออยู่ '+S.units+' หน่วย';
+  $('mAmt').textContent=th(S.pot);$('mBar').style.width=pc+'%';
+  ['buyHome','buyMkt'].forEach(i=>$(i).disabled=!full);
+  $('mktNote').textContent=full?'เศษสะสมครบ 1,000 บาทแล้ว พร้อมซื้อ':'ซื้อได้เมื่อเศษสะสมครบ 1,000 บาท (ตอนนี้ '+th(S.pot)+' บาท)';
+  const hr=h=>`<div class="item"><div class="l"><div class="hi">${h.m[0]==='-'?TK:'฿'}</div><div><b>${h.t}</b><div class="sm">${h.a}</div></div></div><span class="${h.m[0]==='-'?'neg':'pos'}">${h.m}</span></div>`;
+  $('hist').innerHTML=S.hist.map(hr).join('');$('homeHist').innerHTML=S.hist.slice(0,3).map(hr).join('');
+  const days=iso=>Math.max(0,Math.round((new Date(TODAY)-new Date(iso))/864e5));
+  const intr=S.lots.reduce((t,l)=>t+l.u*100*0.0025*days(l.iso)/365,0);
+  $('pTotal').textContent=th(S.value);
+  $('pUnits').textContent='ถืออยู่ '+S.units+' หน่วย · '+S.lots.length+' ล็อต';
+  $('pInt').textContent=intr.toFixed(2)+' บาท';$('pPrize').textContent='50 บาท';$('pNext').textContent='16 พ.ย.';
+  $('lots').innerHTML=S.lots.map(l=>{
+    const nw=l.iso>LASTDRAW,[y,m,d]=l.iso.split('-'),mat=(+y+1)+'-'+m+'-'+d;
+    const chip=l.win?'<span class="chip w">ถูกรางวัล งวด 16 ต.ค.</span>':nw?'<span class="chip p">เข้าร่วมงวด 16 พ.ย.</span>':'<span class="chip">ร่วมลุ้นรางวัลแล้ว</span>';
+    return `<div class="tk"><div class="hd"><div><small>สลากดิจิทัลเพื่อการออม</small><br><b>${l.no}</b></div><span>${l.u} หน่วย</span></div>
+    <div class="bd"><div><span>มูลค่า</span><b>${th(l.u*100)} บาท</b></div><div><span>ดอกเบี้ย</span><b>0.25% ต่อปี</b></div>
+    <div><span>วันที่ซื้อ</span><b>${dth(l.iso)}</b></div><div><span>ครบกำหนด</span><b>${dth(mat)}</b></div></div>
+    <div class="ft">${chip}<span>รางวัลที่ 1 3,000,000 บาท</span></div></div>`}).join('');
+  $('draws').innerHTML=`<div class="dr"><div class="dot">–</div><div style="flex:1"><b>งวดวันที่ 1 พ.ย.</b><div class="sm">ไม่ถูกรางวัล</div></div></div>
+  <div class="dr"><div class="dot w">★</div><div style="flex:1"><b>งวดวันที่ 16 ต.ค.</b><div class="sm">ถูกรางวัลเลขท้าย 4 ตัว (4567) · สลาก กข 1234567</div><span class="chip">โอนเข้า e-Wallet สำเร็จ</span></div><b class="pos">+50 บาท</b></div>
+  <div class="dr"><div class="dot">–</div><div style="flex:1"><b>งวดวันที่ 1 ต.ค.</b><div class="sm">ไม่ถูกรางวัล</div></div></div>`;
+}
+function scan(){
+  modal(`${OK}<h3 style="text-align:center">สแกนจ่ายสำเร็จ</h3>
+  <div class="card"><div class="item"><span>ยอดชำระ</span><b>43 บาท</b></div>
+  <div class="item"><span>ปัดเศษขึ้นเป็น</span><b>60 บาท</b></div>
+  <div class="item"><span>เศษที่เก็บเข้าเศษสะสม</span><b class="pos">+17 บาท</b></div></div>
+  <button class="btn" id="okScan">ตกลง</button>`);
+  $('okScan').onclick=()=>{closeModal();S.pot+=17;
+    S.hist.unshift({t:'สแกนจ่ายร้านกาแฟ',a:'จ่าย 43 บาท · ปัดเป็น 60 · เก็บเศษ 17 บาท',m:'+17'});
+    render();
+    if(S.pot>=1000)setTimeout(notice,500)}
+}
+function notice(){
+  modal(`<h3>เศษเงินสะสมครบ ${th(S.pot)} บาทแล้ว</h3>
+  <p class="sm" style="margin-bottom:14px">กดเพื่อยืนยันซื้อสลากดิจิทัลเพื่อการออม 10 หน่วย (1,000 บาท) ครบตามเกณฑ์ขั้นต่ำของธนาคาร</p>
+  <button class="btn" onclick="askBuy()">ยืนยันซื้อสลาก</button>
+  <button class="btn o" onclick="closeModal()">ไว้ทีหลัง</button>`)
+}
+function askBuy(){
+  if(S.pot<1000)return;
+  modal(`<h3>ใส่ PIN เพื่อยืนยันซื้อ</h3>
+  <p class="sm">สลากดิจิทัลเพื่อการออม · 10 หน่วย · 1,000 บาท</p>
+  <input class="pin" id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="off" aria-label="PIN 6 หลัก">
+  <button class="btn" id="pinOk" disabled>ยืนยันซื้อ</button>
+  <button class="btn o" onclick="closeModal()">ยกเลิก</button>`);
+  const i=$('pin');i.focus();
+  i.oninput=()=>{i.value=i.value.replace(/\D/g,'');$('pinOk').disabled=i.value.length!==6};
+  $('pinOk').onclick=buy;
+}
+function buy(){
+  S.pot-=1000;S.units+=10;S.value+=1000;
+  const no='คง 8801234';
+  S.lots.unshift({no,u:10,iso:TODAY});
+  S.hist.unshift({t:'ซื้อสลากดิจิทัลเพื่อการออม',a:'10 หน่วย · หักจากเศษสะสม',m:'-1,000'});
+  render();
+  modal(`${OK}<h3 style="text-align:center">ซื้อสลากสำเร็จ</h3>
+  <div class="ticket"><div style="font-weight:600">สลากดิจิทัลเพื่อการออม</div>
+    <div class="no">${no}</div><div>จำนวน 10 หน่วย · 1,000 บาท</div><hr>
+    <div class="row"><span>ดอกเบี้ย 0.25% ต่อปี</span><span class="pz">รางวัลที่ 1 3,000,000 บาท</span></div></div>
+  <p class="sm" style="margin-bottom:12px">ออกรางวัลวันที่ 1 และ 16 ของทุกเดือน ผลรางวัลจะโอนเข้า e-Wallet โดยอัตโนมัติ${S.pot>0?' · เศษที่เหลือ '+S.pot+' บาท ยกยอดไปรอบถัดไป':''}</p>
+  <button class="btn" onclick="closeModal();go('port')">ดูในพอร์ต</button>`);
+}
+// บัญชีธนาคาร
+const BANKS=[['KBank','ธนาคารกสิกรไทย'],['SCB','ธนาคารไทยพาณิชย์'],['KTB','ธนาคารกรุงไทย'],['BBL','ธนาคารกรุงเทพ'],['BAY','ธนาคารกรุงศรีอยุธยา'],['ttb','ธนาคารทหารไทยธนชาต'],['GSB','ธนาคารออมสิน'],['BAAC','ธ.ก.ส.'],['CIMBT','ธนาคารซีไอเอ็มบี ไทย'],['UOB','ธนาคารยูโอบี'],['LH Bank','ธนาคารแลนด์ แอนด์ เฮ้าส์'],['KKP','ธนาคารเกียรตินาคินภัทร'],['TISCO','ธนาคารทิสโก้']];let cons=false;
+const nm=k=>{const b=BANKS.find(x=>x[0]===k);return b?b[1]+' ('+k+')':k};
+function bankForm(ctx){
+  const rest=BANKS.filter(b=>!S.banks.includes(b[0]));
+  if(!rest.length)return '<p class="sm">ผูกครบทุกธนาคารที่รองรับแล้ว</p>';
+  return `<select class="sel" id="sel-${ctx}" aria-label="เลือกธนาคาร" onchange="pick=this.value"><option value="">เลือกธนาคาร</option>${rest.map(b=>`<option value="${b[0]}"${pick===b[0]?' selected':''}>${b[1]} (${b[0]})</option>`).join('')}</select>
+  <div class="chk"><input type="checkbox" id="c-${ctx}" ${cons?'checked':''} onchange="cons=this.checked"><label for="c-${ctx}">ฉันยินยอมให้ SatangSave ตัดเงินจากบัญชีธนาคารโดยอัตโนมัติ (Direct Debit) เพื่อชำระค่าสแกนจ่ายและเศษเงินที่ปัดเก็บ</label></div>
+  <button class="btn" onclick="linkBank()">ยืนยันการผูกบัญชี</button>`;
+}
+function renderBanks(){
+  const tags=S.banks.map(b=>`<span class="tag" style="font-size:15px;padding:6px 14px;margin:6px 6px 0 0">${nm(b)}</span>`).join('');
+  $('bankCard').innerHTML=S.banks.length
+    ?'<b>บัญชีธนาคารที่ผูกไว้</b><div>'+tags+'</div>'
+    :'<b>ผูกบัญชีธนาคาร</b><div class="sm">ยังไม่ได้ผูกบัญชี</div>'+bankForm('w');
+  $('bankSet').innerHTML='<b>บัญชีธนาคารที่ผูกไว้</b>'
+    +(S.banks.length?S.banks.map(b=>`<div class="item"><b>${nm(b)}</b><button class="opt" style="flex:none;padding:6px 14px;font-size:13px;color:#B3261E;border-color:#E3B5B1" onclick="askUnlink('${b}')">ยกเลิกการผูก</button></div>`).join(''):'<div class="sm" style="margin:6px 0">ยังไม่ได้ผูกบัญชี</div>')
+    +'<div style="margin-top:12px"><b>เพิ่มบัญชี</b></div>'+bankForm('s');
+}
+function linkBank(){
+  if(!pick)return toast('กรุณาเลือกธนาคาร');
+  if(!cons)return toast('กรุณากดยินยอมการตัดบัญชีก่อน');
+  S.banks.push(pick);toast('ผูกบัญชี '+nm(pick)+' สำเร็จ');pick=null;cons=false;renderBanks()
+}
+function askUnlink(b){
+  modal(`<h3>ยกเลิกการผูกบัญชี ${nm(b)}?</h3><p class="sm" style="margin-bottom:14px">SatangSave จะไม่ตัดเงินจากบัญชีนี้อีก</p>
+  <button class="btn" id="unOk">ยืนยันยกเลิก</button><button class="btn o" onclick="closeModal()">ไม่ยกเลิก</button>`);
+  $('unOk').onclick=()=>{S.banks=S.banks.filter(x=>x!==b);closeModal();renderBanks();toast('ยกเลิกการผูกบัญชี '+nm(b)+' แล้ว')}
+}
+// ตั้งค่าปัดเศษ
+$('r10').onclick=()=>{$('r10').classList.add('on');$('r20').classList.remove('on');$('rNote').textContent='ระบบจำลองนี้ใช้การปัดเศษ 20 บาทเสมอ แม้เลือก 10 บาท'};
+$('r20').onclick=()=>{$('r20').classList.add('on');$('r10').classList.remove('on');$('rNote').textContent='ในระบบจำลองนี้ใช้การปัดเศษ 20 บาทเสมอ'};
+render();renderBanks();
+</script>
+</body>
+</html>
